@@ -8,6 +8,10 @@ import javax.persistence.MappedSuperclass;
 
 @MappedSuperclass
 public class BaseClass implements  Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7080905251204670441L;
 	@Column(name = "id_entry", length = 30)
 	private String idEntry;
 	@Column(name = "d_entry" )
