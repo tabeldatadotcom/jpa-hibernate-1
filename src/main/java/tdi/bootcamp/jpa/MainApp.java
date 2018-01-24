@@ -1,7 +1,10 @@
 package tdi.bootcamp.jpa;
 
 import java.sql.Timestamp;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.hibernate.Session;
 
@@ -10,28 +13,64 @@ import tdi.bootcamp.jpa.model.Departement;
 import tdi.bootcamp.jpa.model.Employee;
 import tdi.bootcamp.jpa.model.Kecamatan;
 import tdi.bootcamp.jpa.model.Student;
+import tdi.bootcamp.jpa.model.Task;
 import tdi.bootcamp.jpa.util.HibernateUtil;
 
 public class MainApp {
+	
+	private static List<Departement> getListDept(Session session) {
+		return session.createQuery(" select p from Departement p JOIN FETCH p.employee ")
+				.getResultList();
+
+	}
+	
+	private static List<Employee> getListPegawaiDanDept(Session session) {
+		return session.createQuery(" select p from Employee p JOIN FETCH p.departement ")
+				.getResultList();
+
+	}
+	private static Set<Employee> getListPegawaiDanTask(Session session) {
+		List<Employee> listData = 
+				session.createQuery(" select p from Employee p JOIN FETCH p.listTugas where p.id = :id ")
+				.setParameter("id", 42)
+				.getResultList();
+		return new HashSet<>(listData);
+
+	}
 	public static void main(String[] args) {
 		Session session = HibernateUtil.getSessionFactory().openSession();
-		session.beginTransaction();
+		
 
 		String result = getNativeQuery(session, "select version()");
 		System.out.println(result);
 
-		// Integer emp = simpanPegawai( session);
+	/*	List<Departement> listdept =  getListDept( session);//
+		for (Departement de : listdept) {
+			System.out.println(de.getNamaDepartement()+"  emplyee "+de.getEmployee().getName());
+		}*/
+		
+		//
+		// Integer emp =  simpanPegawaiDept( session);
 		// updatePegawai( session);
 		// System.out.println( " hasil = "+emp);
 		// deletePegawai( session);
 		// updatePegawaiDua(session);
-		Integer emp = simpanMurid(session);// simpanPegawai(session);
-		List<Employee> listPeg = getListPegawai(session);// getListPegawaiDanDept( session);//
-		for (Employee employee : listPeg) {
-			System.out.println(employee.getName());
+		//Integer emp = simpanMurid(session);// simpanPegawai(session);
+		Set<Employee> listPegTask =  getListPegawaiDanTask( session);//
+		for (Employee employee : listPegTask) {
+			Set<Task> listTugas = employee.getListTugas();
+			System.out.println(employee.getName()+"  id " +employee.getId());
+			for (Task task : listTugas) {
+				System.out.println( "  tugas "+task.getNamaTugas());
+			}
 		}
+		
+	/*	List<Employee> listPeg =  getListPegawaiDanDept( session);//
+		for (Employee employee : listPeg) {
+			System.out.println(employee.getName()+"  dept "+employee.getDepartement().getNamaDepartement());
+		}
+*/
 
-		session.getTransaction().commit();
 		session.close();
 
 		HibernateUtil.shutdown();
@@ -61,28 +100,37 @@ public class MainApp {
 	}
 
 	private static Integer simpanPegawaiDept(Session session) {
+		session.beginTransaction();
 		Departement dept = new Departement();
-		dept.setNamaDepartement("DIV IT");
-		dept.setIdEntry("userdept");
+		dept.setNamaDepartement("DIV IT33");
+		dept.setIdEntry("userdeptX33");
 		dept.setTglEntry(new Timestamp(System.currentTimeMillis()));
 		Employee emp = new Employee();
-		emp.setName("nama abcde dept ");
-		emp.setAlamat(" JL Tes ABCDE DEPT");
-		emp.setIdEntry("user1dept");
+		emp.setName("nama abcde dept XX33");
+		emp.setAlamat(" JL Tes ABCDE DEPTX33");
+		emp.setIdEntry("user1deptX");
 		emp.setTglEntry(new Timestamp(System.currentTimeMillis()));
 		emp.setDepartement(dept);
+		int hasil = (Integer)session.save(emp);
 		// ------------set
-		/*
-		 * Set simpanTask = new LinkedHashSet<Task>( ); Task task = new Task();
-		 * task.setNamaTugas("tugas 1"); task.setIdEntry("entrytask1");
-		 * task.setTglEntry(new Timestamp(System.currentTimeMillis()));
-		 * simpanTask.add(task);
-		 * 
-		 * emp.setListTugas(simpanTask);
-		 */
+		
+		  
+		   Task task = new Task();
+		   task.setNamaTugas("tugas 23"); 
+		   task.setIdEntry("entrytask23");
+		   task.setEmployee(emp);
+		   task.setTglEntry(new Timestamp(System.currentTimeMillis()));
+		   session.save(task);
+		  task = new Task();
+		   task.setNamaTugas("tugas 33"); 
+		   task.setIdEntry("entrytask33");
+		   task.setEmployee(emp);
+		   task.setTglEntry(new Timestamp(System.currentTimeMillis()));
+		   session.save(task); 
+		   session.getTransaction().commit();
 
 		// ------
-		return (Integer) session.save(emp);
+		return hasil;
 
 	}
 
@@ -118,8 +166,5 @@ public class MainApp {
 
 	}
 
-	private static List<Employee> getListPegawaiDanDept(Session session) {
-		return session.createQuery("select p from Employee p JOIN FETCH p.departement ").getResultList();
-
-	}
+	
 }

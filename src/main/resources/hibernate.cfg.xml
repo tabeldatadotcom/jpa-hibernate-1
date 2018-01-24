@@ -10,6 +10,9 @@
 		<property name="hibernate.connection.username">postgres</property>
 		<property name="hibernate.connection.password">123456</property>
 		<property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>
+		<property name="show_sql">true</property>
+		<property name="format_sql">true</property>
+		<property name="use_sql_comments">true</property>
 		<property name="hbm2ddl.auto">update</property>
 		<mapping class="tdi.bootcamp.jpa.model.Employee"/> 
 		<mapping class="tdi.bootcamp.jpa.model.Departement"/>  
@@ -17,5 +20,6 @@
 		<mapping class="tdi.bootcamp.jpa.model.Kecamatan"/> 
 		<mapping class="tdi.bootcamp.jpa.model.Alamat"/>  
 		<mapping class="tdi.bootcamp.jpa.model.Student"/>  
+		<mapping class="tdi.bootcamp.jpa.model.Task"/>   
 	</session-factory>
 </hibernate-configuration>

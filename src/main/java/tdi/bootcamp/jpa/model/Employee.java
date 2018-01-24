@@ -1,5 +1,7 @@
 package tdi.bootcamp.jpa.model;
 
+import java.util.Set;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,20 +10,18 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "pegawai", schema = "public")
 public class Employee extends BaseClass {
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
-	 
-	
+
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO) 
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "id", updatable = false, nullable = false)
 	private int id;
 	@Column(name = "nama", length = 50)
@@ -33,7 +33,7 @@ public class Employee extends BaseClass {
 	@JoinColumn(name = "id_dept")
 	private Departement departement;
 
-	/*@OneToMany(mappedBy="employee")
+	@OneToMany(cascade = CascadeType.ALL,mappedBy = "employee")
 	private Set<Task> listTugas;
 
 	public Set<Task> getListTugas() {
@@ -42,7 +42,7 @@ public class Employee extends BaseClass {
 
 	public void setListTugas(Set<Task> listTugas) {
 		this.listTugas = listTugas;
-	}*/
+	}
 
 	public int getId() {
 		return id;
